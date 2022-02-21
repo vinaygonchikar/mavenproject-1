@@ -1,18 +1,18 @@
 name: Branch-create
-
 on:
-   workflow_dispatch:
-     inputs:
-       branchname:
-         description: 'your branch name will be feature-(below entered text)'     
-         required: true
-         default: 'warning'
+  workflow_dispatch:
+    inputs:
+      branchname:
+        description: 'your branch name will be feature-(below entered text)'     
+        required: true
+        default: 'warning'
 
  
 jobs:
- Create-feature-branch:
+  Create-feature-branch:
+    if: |
+      github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch'  
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 8
@@ -28,6 +28,3 @@ jobs:
           git checkout feature-${{ github.event.inputs.branchname }}   
           mvn versions:set -DnewVersion=feature-${{ github.event.inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
           git push https://${{ github.token }}@github.com/${{ github.repository }}.git
-          
-          
-

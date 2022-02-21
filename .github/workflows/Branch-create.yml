@@ -25,9 +25,10 @@ jobs:
         run: |
           echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
           git branch feature-${{ github.event.inputs.branchname }}
-          git checkout feature-${{ github.event.inputs.branchname }}
+          git checkout feature-${{ github.event.inputs.branchname }}   
           mvn versions:set -DnewVersion=feature-${{ github.event.inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
           git commit -m "feature-${{ github.event.inputs.branchname }} created & upadted pom.xml file"
+          git remote set-url --push origin https://your_username:$GITHUB_TOKEN@github.com/vinaygonchikar/mavenproject-1
           git push
           
           

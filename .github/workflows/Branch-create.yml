@@ -27,4 +27,6 @@ jobs:
           git branch feature-${{ github.event.inputs.branchname }}
           git checkout feature-${{ github.event.inputs.branchname }}   
           mvn versions:set -DnewVersion=feature-${{ github.event.inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
+          git add .
+          git commit -m "pom.xml file upadted while creating the branch"
           git push https://${{ github.token }}@github.com/${{ github.repository }}.git

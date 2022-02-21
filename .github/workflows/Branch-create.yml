@@ -23,57 +23,11 @@ jobs:
           
       - name: Branch create
         run: |
-          pwd  
-          echo "${{ env.IMAGE_TAG }}"
-          echo ${{ github.ref_type }} 
-          echo ${{ github.ref_name }}
-          echo ${{ github.event }}
-          echo ${{ github.event_name }}
-          echo ${{ github.run_id }}
-          echo ${{ github.run_number }}
-          echo ${{ github.server_url }}
-          echo ${{ github.repository }}
-          echo ${{ env.URL_GITACTION }}
-          echo ${GITHUB_REF##*/}
-          echo ${{ github.actor }} 
-          echo ${{ github.action_path }}
-          echo ${{ github.action_ref }}
-          echo ${{ github.action_repository	}}
-          echo ${{ github.actor }}
-          echo ${{ github.api_url }}
-          echo ${{ github.base_ref }}
-          echo ${{ github.env }}
-          echo ${{ github.event }}
-          echo ${{ github.event_name }}
-          echo ${{ github.event_path }}
-          echo ${{ github.graphql_url }}
-          echo ${{ github.head_ref }}
-          echo ${{ github.job }}
-          echo ${{ github.ref }}
-          echo ${{ github.ref_protected }}
-          echo ${{ github.path	 }}
-          echo ${{ github.repository }}
-          echo ${{ github.repository_owner }}
-          echo ${{ github.repositoryUrl }}
-          echo ${{ github.retention_days }}
-          echo ${{ github.run_id }}
-          echo ${{ github.run_number }}
-          echo ${{ github.run_attempt }}
-          echo ${{ github.server_url }}
-          echo ${{ github.sha }}
-          echo ${{ github.token }}
-          echo ${{ github.workflow }}
-          echo ${{ github.workspace }}
-          echo ${{github.event.head_commit.message}}
           echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
           git branch feature-${{ github.event.inputs.branchname }}
           git checkout feature-${{ github.event.inputs.branchname }}   
           mvn versions:set -DnewVersion=feature-${{ github.event.inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
-          # git push https://$(git_token)@github.com/user_name/repo_name.git
-          # git remote set-url origin https://scuzzlebuzzle:<MYTOKEN>@github.com/scuzzlebuzzle/ol3-1.git
-          # git commit -m "feature-${{ github.event.inputs.branchname }} created & upadted pom.xml file"
-          git remote set-url --push origin https://your_username:$GITHUB_TOKEN@github.com/vinaygonchikar/mavenproject-1
-          git push
+          git push https://${{ github.token }}@github.com/${{ github.repository }}.git
           
           
 

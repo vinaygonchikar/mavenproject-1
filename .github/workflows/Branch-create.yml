@@ -23,6 +23,7 @@ jobs:
           
       - name: Branch create
         run: |
+          pwd  
           echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
           git branch feature-${{ github.event.inputs.branchname }}
           git checkout feature-${{ github.event.inputs.branchname }}   

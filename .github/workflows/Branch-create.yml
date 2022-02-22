@@ -1,4 +1,4 @@
-name: Branch-create-from-master
+name: create-Branch-from-master
 on:
   workflow_dispatch:
     inputs:

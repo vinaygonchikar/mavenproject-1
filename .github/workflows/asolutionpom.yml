@@ -2,7 +2,10 @@ name: solution pom.xml
 
 on:
   pull_request:
-    branches: [ feature ]
+    types:
+      - opened
+    branches:    
+      - 'feature**'
 
 jobs:
 

@@ -23,6 +23,8 @@ jobs:
           
       - name: Branch create
         run: |
+          git config --global user.email "githubactions@gmal.com"
+          git config --global user.name "githubaction"
           echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
           git branch feature-${{ github.event.inputs.branchname }}
           git checkout feature-${{ github.event.inputs.branchname }}   

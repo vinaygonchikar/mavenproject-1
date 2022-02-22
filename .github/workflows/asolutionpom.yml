@@ -1,11 +1,11 @@
 name: solution pom.xml
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
-#     branches:    
-#       - 'feature**'
+    branches:    
+      - 'master'
 
 jobs:
 

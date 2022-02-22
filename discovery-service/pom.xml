@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>pl.piomin</groupId>
 		<artifactId>sample-spring-microservices</artifactId>
-		<version>feature-333.333.333-SNAPSHOT</version>
+
 	</parent>
 	<artifactId>discovery-service</artifactId>
 

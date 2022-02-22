@@ -3,8 +3,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.piomin</groupId>
     <artifactId>sample-spring-microservices</artifactId>
-    <version>feature-333.333.333-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       branchname:
-        description: 'your branch name will be feature-(below entered text)'     
+        description: 'your branch name will be feature-(below entered text) & version in pom.xml will be feature-(below entered text)-snapshot '     
         required: true
         default: 'warning'
 

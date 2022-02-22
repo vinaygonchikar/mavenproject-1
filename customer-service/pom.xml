@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>pl.piomin</groupId>
 		<artifactId>sample-spring-microservices</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>feature-222.222.222-SNAPSHOT</version>
 	</parent>
 	<artifactId>customer-service</artifactId>
 

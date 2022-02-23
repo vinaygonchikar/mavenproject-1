@@ -72,14 +72,24 @@ jobs:
           token: ${{ secrets.REPO_ACCOUNT_KEY }}
 
       - name: Display the feature branch name going to merge to master
-        run: |
+        shell: "bash"
+        run: |-  
           echo "${{ github.ref_name }}"
-          echo "${{needs.Finalizing-next-tag-version.outputs.output1}}"
+          echo "${{needs.Finalizing-next-tag-version.outputs.output1}}"         
+          echo "PATHOFFOLDER=$(echo "${{ github.repository }}" | cut -d'/' -f2)" >> $GITHUB_ENV     
+          echo "${{ env.PATHOFFOLDER }}"               
 
       - name: merge-feature-to-master 
         run: |
+          pwd
+          cd ..
+          cd ..
+          pwd
+          git clone ${{ github.server_url }}/${{ github.repository }}
+          cd ./
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
+          git clone 
           git pull --all
           git checkout origin/master
           git merge ${{ github.ref_name }}

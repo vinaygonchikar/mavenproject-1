@@ -8,7 +8,7 @@ on:
         default: 'warning'
 
 jobs:
-  upadte-pom.xml-in-master:
+  upadte:
     if: |
       github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: ubuntu-latest

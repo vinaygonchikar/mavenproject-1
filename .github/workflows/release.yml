@@ -49,9 +49,9 @@ jobs:
           if [[ ${{ github.event.inputs.Bumpversion }} == Minor ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.$((${{ env.MAJOR_NO }}+1)).0" >> $GITHUB_ENV; fi  
           if [[ ${{ github.event.inputs.Bumpversion }} == Patch ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.${{ env.MINOR_NO }}.$((${{ env.PATCH_NO }}+1)).0" >> $GITHUB_ENV; fi
 
-       - name: DISPLAY
-         run: | 
-           echo "${{ env.LATEST_TAG }}"                  
+      - name: DISPLAY
+        run: | 
+          echo "${{ env.LATEST_TAG }}"                  
 
 
 

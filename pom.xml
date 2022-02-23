@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.piomin</groupId>
     <artifactId>sample-spring-microservices</artifactId>
-    <version>feature-sometime-life-suck-SNAPSHOT</version>
+    <version>feature-that-life-isgood-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>

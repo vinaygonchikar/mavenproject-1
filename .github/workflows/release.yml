@@ -20,31 +20,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: fetch the tags
+      - name: Fetch all tags
         run: |
           git fetch --all --tags
           git tag
 
-      - name: Dispaly the last tag
+      - name: Store the last tag
         run: |         
-          echo "LAST_TAG=$(git tag | grep "v*.*.*" | tail -1)" >> $GITHUB_ENV               
+          echo "LAST_TAG=$(git tag | grep "v*.*.*" | tail -1)" >> $GITHUB_ENV          
+
+      - name: Dispay the last tag
+        run: |         
           echo "${{ env.LAST_TAG }}"
 
-      - name: store version
+      - name: Store version
         shell: "bash"
         run: |-   
           echo "${{ env.LAST_TAG }}" 
           echo "MAJOR_NO=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f1)" >> $GITHUB_ENV
           echo "MINOR_NO=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
-          echo "PATCH_NO=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f3)" >> $GITHUB_ENV          
-          echo "The last major version is ${{ env.MAJOR_NO }}" 
-          echo "The last minor version is${{ env.MINOR_NO }}" 
-          echo "The last patch version is${{ env.PATCH_NO }}"  
+          echo "PATCH_NO=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f3)" >> $GITHUB_ENV   
+
+      - name: Evaluating which version to bump
+        run: |         
+          echo "${{ env.MAJOR_NO }}" 
+          echo "${{ env.MINOR_NO }}" 
+          echo "${{ env.PATCH_NO }}"  
           if [[ ${{ github.event.inputs.Bumpversion }} == Major ]]; then echo "LATEST_TAG=$((${{ env.MAJOR_NO }}+1)).0.0" >> $GITHUB_ENV; fi  
           if [[ ${{ github.event.inputs.Bumpversion }} == Minor ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.$((${{ env.MAJOR_NO }}+1)).0" >> $GITHUB_ENV; fi  
           if [[ ${{ github.event.inputs.Bumpversion }} == Patch ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.${{ env.MINOR_NO }}.$((${{ env.PATCH_NO }}+1))" >> $GITHUB_ENV; fi
 
-      - name: DISPLAY
+      - name: Display the next tag version
         run: | 
           echo "${{ env.LATEST_TAG }}"                  
 

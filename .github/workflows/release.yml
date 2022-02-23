@@ -111,7 +111,7 @@ jobs:
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v2
         with:
-          java-version: '${{ env.JAVA_VERSION }}'                                                                            
+          java-version: '8'                 # chnage after moving to actual                                                           
           distribution: 'adopt'
 
       - name: update & push to master

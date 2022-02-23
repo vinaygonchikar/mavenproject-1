@@ -87,6 +87,8 @@ jobs:
 
       - name: Approve pull request 
         run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
 
       # - name: Display the feature branch name going to merge to master hello

@@ -23,6 +23,7 @@ jobs:
 #store the latest tag      
       - name: Store the latest tag
         run: |
+          git fetch --all --tags
           git tag
 
       - name: Store the latest tag

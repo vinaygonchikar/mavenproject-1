@@ -24,9 +24,14 @@ jobs:
       - name: Store the latest tag
         run: |
           git pull --all
-          echo "LATEST_TAG=$(echo git describe --tags --abbrev=0)" >> $GITHUB_ENV
-          echo "${{ env.LATEST_TAG }}"
 
+      - name: Store the latest tag
+        run: |         
+          echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV          
+
+      - name: Store the latest tag
+        run: |         
+          echo "${{ env.LATEST_TAG }}"
   # echo "LATEST_TAG=$(echo git describe --tags --abbrev=0 | cut -d'v' -f2 | cut -d'V' -f2)" >> $GITHUB_ENV
 
       # - name: Deciding branch name

@@ -90,6 +90,79 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
+  upadte-pomfile-in-master:
+    if: |
+      github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
+    runs-on: ubuntu-latest
+    needs: [Finalizing-next-tag-version, merge-feature-to-master-branch]
+    steps:
+# checkout to branch
+      - name: Checking out...
+        uses: actions/checkout@v2
+#Environment variables
+      - name: Set GitHub_Env value
+        run: |
+          echo "JAVA_VERSION=$(cat ./.github/variable.txt | grep "JAVA_VERSION" | cut -d'=' -f2)" >> $GITHUB_ENV
+# display java version 
+      - name: Display GitHub_Env values
+        run: |
+          echo "The java version is  ${{ env.JAVA_VERSION }}"        
+# install java in VM
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'                                                                            
+          distribution: 'adopt'
+
+      - name: update & push to master
+        run: |
+          git config --global user.email "githubction@gmail.com"
+          git config --global user.name "githubaction" 
+          git pull --all
+          git checkout master
+          mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
+          git add .
+          git commit -m "change pom.xml version to ${{needs.Finalizing-next-tag-version.outputs.output1}}"     
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git   
+
+  Automatic-tag:
+    if: |
+      github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: tag the master branch
+        run: | 
+          echo "v${{needs.Finalizing-next-tag-version.outputs.output1}}"
+          git checkout master          
+          git tag v${{needs.Finalizing-next-tag-version.outputs.output1}}   
+          git push origin v${{needs.Finalizing-next-tag-version.outputs.output1}}  
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       # - name: Display the feature branch name going to merge to master hello

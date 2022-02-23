@@ -90,7 +90,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
-  upadte-pomfile-in-master:
+  update-pomfile-in-master:
     if: |
       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
@@ -129,10 +129,9 @@ jobs:
     if: |
       github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    outputs:
+    needs: [Finalizing-next-tag-version, merge-feature-to-master-branch,update-pomfile-in-master]
     steps:
-      - uses: actions/checkout@v2
-        
+      - uses: actions/checkout@v2 
       - name: tag the master branch
         run: | 
           echo "v${{needs.Finalizing-next-tag-version.outputs.output1}}"

@@ -3,12 +3,12 @@ on:
   workflow_dispatch:
     inputs:
       branchname:
-        description: 'ypush to master'     
+        description: 'push to master'     
         required: true
         default: 'warning'
 
 jobs:
-  upadte:
+  upadte-pomfile:
     if: |
       github.ref_name == 'master' && github.ref_type == 'branch' 
     runs-on: ubuntu-latest
@@ -28,6 +28,8 @@ jobs:
         run: |
           git config --global user.email "vinaygonchikar@gmail.com"
           git config --global user.name "vinaygonchikar" 
+          git pull --all
+          git checkout feature-hello-boss
           mvn versions:set -DnewVersion=bbbbbbbbbbbb -DprocessAllModules -DgenerateBackupPoms=false          
           git add .
           git commit -m "change pom.xml version to latest tag before merging"     

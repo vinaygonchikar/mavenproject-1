@@ -78,15 +78,15 @@ jobs:
       - name: Store pull request number
         shell: "bash"
         run: |-  
-          echo "PULLREQUEST_NO=$(gh pr view ${{ github.ref_name }} | head -10 | grep "number:" | cut -d':' -f2)" >> $GITHUB_ENV
+          echo "PULLREQUEST_NO=$(gh pr view ${{ github.ref_name }} | head -10 | grep "number:" | cut -d':' -f2 | xargs echo -n)" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
 
       - name: Display pull request number
         run: echo "${{ env.PULLREQUEST_NO }}" 
 
-      # - name: Approve pull request 
-      # - run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
+      - name: Approve pull request 
+      - run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
 
 
       # - name: Display the feature branch name going to merge to master hello

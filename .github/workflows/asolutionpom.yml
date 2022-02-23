@@ -1,11 +1,12 @@
 name: solution pom.xml
 
 on:
-  pull_request_target:
-    types:
-      - opened
-    branches:    
-      - 'master'
+  workflow_dispatch:
+    inputs:
+      branchname:
+        description: 'your branch name will be feature-(below entered text) & version in pom.xml will be feature-(below entered text)-snapshot '     
+        required: true
+        default: 'warning'
 
 jobs:
 

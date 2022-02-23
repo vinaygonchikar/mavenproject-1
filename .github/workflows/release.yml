@@ -55,10 +55,10 @@ jobs:
       - name: Display the next tag version
         run: | 
           echo "${{ env.LATEST_TAG }}"
-          echo "LAST_VERSION=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2)" >> $GITHUB_ENV    
+          echo "LATEST_VERSION=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f2)" >> $GITHUB_ENV    
 
       - id: step1
-        run: echo "::set-output name=LAST_VERSION::${{ env.LAST_VERSION }}"                       
+        run: echo "::set-output name=LATEST_VERSION::${{ env.LATEST_VERSION }}"                       
 
   merge-feature-to-master-branch:
     if: |
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.REPO_ACCOUNT_KEY }}
-          
+
       - name: Display the feature branch name going to merge to master
         run: echo "${{ github.ref_name }}"
 
@@ -77,14 +77,12 @@ jobs:
         run: |
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
-          mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false
-          git add .
-          git commit -m "change pom.xml version to latest tag before merging"
           git checkout master
           git merge ${{ github.ref_name }}
+          mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
           git add .
-          git commit -m "merged from ${{ github.ref_name }} to master"
-          git push https://${{ github.token }}@github.com/${{ github.repository }}.git
+          git commit -m "change pom.xml version to latest tag before merging"
+          git push https://${{ github.token }}@github.com/${{ github.repository }}.git master
 
 #   tag-the-master-branch:
 #     if: |

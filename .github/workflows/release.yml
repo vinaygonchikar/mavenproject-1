@@ -18,6 +18,8 @@ jobs:
     if: |
       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.FINAL_TAG }}           
     steps:
       - uses: actions/checkout@v2
       - name: Fetch all tags
@@ -52,7 +54,10 @@ jobs:
 
       - name: Display the next tag version
         run: | 
-          echo "${{ env.LATEST_TAG }}"                  
+          echo "${{ env.LATEST_TAG }}"      
+
+      - id: step1
+        run: echo "::set-output name=FINAL_TAG::${{ env.LATEST_TAG }}"                       
 
   merge-feature-to-master-branch:
     if: |

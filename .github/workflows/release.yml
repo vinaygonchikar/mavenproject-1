@@ -19,7 +19,7 @@ jobs:
       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.step1.outputs.LAST_VERSION }}           
+      output1: ${{ steps.step1.outputs.LATEST_VERSION1 }}           
     steps:
       - uses: actions/checkout@v2
       - name: Fetch all tags
@@ -48,7 +48,7 @@ jobs:
           echo "${{ env.MAJOR_NO }}" 
           echo "${{ env.MINOR_NO }}" 
           echo "${{ env.PATCH_NO }}"  
-          if [[ ${{ github.event.inputs.Bumpversion }} == Major ]]; then echo "LATEST_TAG=$((${{ env.MAJOR_NO }}+1)).0.0" >> $GITHUB_ENV; fi  
+          if [[ ${{ github.event.inputs.Bumpversion }} == Major ]]; then echo "LATEST_TAG=v$((${{ env.MAJOR_NO }}+1)).0.0" >> $GITHUB_ENV; fi  
           if [[ ${{ github.event.inputs.Bumpversion }} == Minor ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.$((${{ env.MAJOR_NO }}+1)).0" >> $GITHUB_ENV; fi  
           if [[ ${{ github.event.inputs.Bumpversion }} == Patch ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.${{ env.MINOR_NO }}.$((${{ env.PATCH_NO }}+1))" >> $GITHUB_ENV; fi
 
@@ -56,9 +56,10 @@ jobs:
         run: | 
           echo "${{ env.LATEST_TAG }}"
           echo "LATEST_VERSION=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f2)" >> $GITHUB_ENV    
+          echo "${{ env.LATEST_VERSION }}"
 
       - id: step1
-        run: echo "::set-output name=LATEST_VERSION::${{ env.LATEST_VERSION }}"                       
+        run: echo "::set-output name=LATEST_VERSION1::${{ env.LATEST_VERSION }}"                       
 
   merge-feature-to-master-branch:
     if: |
@@ -79,7 +80,7 @@ jobs:
         run: |
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
-          git pull -all
+          git pull --all
           git checkout master
           git merge ${{ github.ref_name }}
           mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          

@@ -15,6 +15,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Branch create
         run: |
+          pwd
+          git clone ${{ github.server_url }}/${{ github.repository }}
+          cd ./${{ env.PATHOFFOLDER }}
+          pwd
+          git config --global user.email "vinaygonchikar@gmail.com"
+          git config --global user.name "vinaygonchikar"
           git pull --all
           git checkout master
           git merge origin/feature-3000  

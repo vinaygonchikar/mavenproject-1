@@ -81,8 +81,10 @@ jobs:
 
       - name: merge-feature-to-master 
         run: |
+          pwd
           git clone ${{ github.server_url }}/${{ github.repository }}
           cd ./${{ env.PATHOFFOLDER }}
+          pwd
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
           git pull --all
@@ -91,7 +93,11 @@ jobs:
           mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
           git add .
           git commit -m "change pom.xml version to latest tag before merging"
-          git push https://${{ github.token }}@github.com/${{ github.repository }}.git master
+          git push https://${{ github.token }}@github.com/${{ github.repository }}.git
+          ls -la
+          rm -f ${{ env.PATHOFFOLDER }}
+          ls -la
+
 
 
 #   tag-the-master-branch:

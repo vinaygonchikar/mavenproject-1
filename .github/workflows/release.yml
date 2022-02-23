@@ -36,9 +36,9 @@ jobs:
       - name: store version
         run: |         
           echo "${{ env.LATEST_TAG }}" 
-          echo "MAJOR_NO=$(echo v1.2.3 | cut -d'v' -f1 | cut -d'.' -f2)" >> $GITHUB_ENV
-          echo "MINOR_NO=$(echo v1.2.3 | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
-          echo "PATCH_NO=$(echo v1.2.3 | cut -d'v' -f3 | cut -d'.' -f2)" >> $GITHUB_ENV   
+          echo "MAJOR_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f1 | cut -d'.' -f1)" >> $GITHUB_ENV
+          echo "MINOR_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
+          echo "PATCH_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f3 | cut -d'.' -f2)" >> $GITHUB_ENV   
 
       - name: DISPLAY
         run: |         

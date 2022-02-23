@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>pl.piomin</groupId>
 		<artifactId>sample-spring-microservices</artifactId>
-		<version>feature-that-life-isgood-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>account-service</artifactId>
 

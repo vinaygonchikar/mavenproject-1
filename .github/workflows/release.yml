@@ -81,9 +81,12 @@ jobs:
 
       - name: merge-feature-to-master 
         run: |
+          ls -la
           pwd
           cd ..
+          ls -la
           cd ..
+          ls -la
           pwd
           git clone ${{ github.server_url }}/${{ github.repository }}
           cd ./${{ env.PATHOFFOLDER }}

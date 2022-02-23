@@ -59,7 +59,13 @@ jobs:
           echo "${{ env.LATEST_VERSION }}"
 
       - id: step1
-        run: echo "::set-output name=LATEST_VERSION1::${{ env.LATEST_VERSION }}"                       
+        run: echo "::set-output name=LATEST_VERSION1::${{ env.LATEST_VERSION }}"                
+
+      - name: Post to a Slack channel
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${{ github.workflow }} ||| in ${{ github.event.repository.name }} repository  ||| in ${{ github.ref_name }} ${{ github.ref_type }} ||| is a ${{ job.status }} ||| click below url to see logs ||| ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ secrets.SLACK_WEBHOOK }}
+
 
   merge-feature-to-master-branch:
     if: |
@@ -89,6 +95,12 @@ jobs:
         run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+
+      - name: Post to a Slack channel
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${{ github.workflow }} ||| in ${{ github.event.repository.name }} repository  ||| in ${{ github.ref_name }} ${{ github.ref_type }} ||| is a ${{ job.status }} ||| click below url to see logs ||| ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ secrets.SLACK_WEBHOOK }}
+
 
   update-pomfile-in-master:
     if: |
@@ -125,6 +137,12 @@ jobs:
           git commit -m "change pom.xml version to ${{needs.Finalizing-next-tag-version.outputs.output1}}"     
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git   
 
+      - name: Post to a Slack channel
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${{ github.workflow }} ||| in ${{ github.event.repository.name }} repository  ||| in ${{ github.ref_name }} ${{ github.ref_type }} ||| is a ${{ job.status }} ||| click below url to see logs ||| ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ secrets.SLACK_WEBHOOK }}
+
+
   Automatic-tag:
     if: |
       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
@@ -141,172 +159,70 @@ jobs:
           git push origin v${{needs.Finalizing-next-tag-version.outputs.output1}}  
       
 
+  Push-to-GCR:
+#choose the OS in which you want to trigger the job 
+    runs-on: ubuntu-latest
+    needs: [Finalizing-next-tag-version, merge-feature-to-master-branch,update-pomfile-in-master,Automatic-tag]
+    steps:
+# checkout to branch
+      - name: Checking out...
+        uses: actions/checkout@v2
+#Environment variables
+      - name: Set GitHub_Env value
+        run: |
+          echo "HOSTNAME=$(cat ./.github/variable.txt | grep "HOSTNAME" | cut -d'=' -f2)" >> $GITHUB_ENV
+          echo "PROJECT_ID=$(cat ./.github/variable.txt | grep "PROJECT_ID" | cut -d'=' -f2)" >> $GITHUB_ENV
+          echo "MAVEN_GOAL=$(cat ./.github/variable.txt | grep "MAVEN_GOAL" | cut -d'=' -f2)" >> $GITHUB_ENV
+          echo "SLACK_CHANNEL=$(cat ./.github/variable.txt | grep "SLACK_CHANNEL" | cut -d'=' -f2)" >> $GITHUB_ENV        
+          echo "IMAGE_NAME=$(cat ./pom.xml | grep "artifactId" | cut -d'>' -f2 | cut -d'<' -f1 | head -1)" >> $GITHUB_ENV 
+          echo "JAVA_VERSION=$(cat ./.github/variable.txt | grep "JAVA_VERSION" | cut -d'=' -f2)" >> $GITHUB_ENV
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      # - name: Display the feature branch name going to merge to master hello
-      #   shell: "bash"
-      #   run: |-  
-      #     echo "${{ github.ref_name }}"
-      #     echo "${{needs.Finalizing-next-tag-version.outputs.output1}}"         
-      #     echo "PATHOFFOLDER=$(echo "${{ github.repository }}" | cut -d'/' -f2)" >> $GITHUB_ENV     
-      #     echo "${{ env.PATHOFFOLDER }}"               
-
-      # - name: merge-feature-to-master 
-      #   run: |
-      #     pwd
-      #     git clone ${{ github.server_url }}/${{ github.repository }}
-      #     cd ./${{ env.PATHOFFOLDER }}
-      #     pwd
-      #     git config --global user.email "vinaygonchikar@gmail.com"
-      #     git config --global user.name "vinaygonchikar"
-      #     git pull --all
-      #     git checkout master
-      #     git merge origin/${{ github.ref_name }} 
-      #     mvn versions:set -DnewVersion=bbbbbbbbbbbb -DprocessAllModules -DgenerateBackupPoms=false          
-      #     git add .
-      #     git commit -m "change pom.xml version to latest tag before merging"
-      #     git push https://${{ github.token }}@github.com/${{ github.repository }}.git
-
-
-
-
-#   tag-the-master-branch:
-#     if: |
-#       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: Deciding branch name
-#         shell: "bash"
-#         run: |-
-#           if [[ ${{ github.event.inputs.inputpassed }} == local ]]; then echo "FINAL_BRANCH_NAME=local-${{ github.event.inputs.branchname }}" >> $GITHUB_ENV; fi
-
-#       - name: Display the branch name
-#         run: echo "${{ env.FINAL_BRANCH_NAME }}"
-
-#       - name: create Branch 
-#         run: |
-#           git config --global user.email "githubactions@homedepot.com"
-#           git config --global user.name "githubaction"
-#           echo "your new branch name is local-${{ github.event.inputs.branchname }}"
-#           git branch ${{ env.FINAL_BRANCH_NAME }}
-#           git checkout ${{ env.FINAL_BRANCH_NAME }}   
-#           mvn versions:set -DnewVersion=${{ env.FINAL_BRANCH_NAME }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
-#           git add .
-#           git commit -m "pom.xml file upadted while creating the branch"
-#           git push https://${{ github.token }}@github.com/${{ github.repository }}.git
-
-#   Prod-CI-automatic-trigger:
-# #choose the OS in which you want to trigger the job 
-#     runs-on: ubuntu-latest
-#     needs: Automatic-tag    
-#     steps:
-# # checkout to branch
-#       - name: Checking out...
-#         uses: actions/checkout@v2
-#         with:
-#           token: ${{ secrets.REPO_ACCOUNT_KEY }}
-# #Environment variables
-#       - name: Set GitHub_Env value
-#         run: |
-#           echo "HOSTNAME=$(cat ./.github/variable.txt | grep "HOSTNAME" | cut -d'=' -f2)" >> $GITHUB_ENV
-#           echo "PROJECT_ID=$(cat ./.github/variable.txt | grep "PROJECT_ID" | cut -d'=' -f2)" >> $GITHUB_ENV
-#           echo "MAVEN_GOAL=$(cat ./.github/variable.txt | grep "MAVEN_GOAL" | cut -d'=' -f2)" >> $GITHUB_ENV
-#           echo "SLACK_CHANNEL=$(cat ./.github/variable.txt | grep "SLACK_CHANNEL" | cut -d'=' -f2)" >> $GITHUB_ENV        
-#           echo "IMAGE_NAME=$(cat ./pom.xml | grep "artifactId" | cut -d'>' -f2 | cut -d'<' -f1 | head -1)" >> $GITHUB_ENV 
-#           echo "JAVA_VERSION=$(cat ./.github/variable.txt | grep "JAVA_VERSION" | cut -d'=' -f2)" >> $GITHUB_ENV
-
-#       - name: Display GitHub_Env values
-#         run: |
-#           echo "The hostname is ${{ env.HOSTNAME }}"
-#           echo "The Project id is ${{ env.PROJECT_ID }}" 
-#           echo "The maven goal is ${{ env.MAVEN_GOAL }}"    
-#           echo "job status will be sent to ${{ env.SLACK_CHANNEL }} slack channel"
-#           echo "The image name is ${{ env.IMAGE_NAME }}" 
-#           echo "The java version is  ${{ env.JAVA_VERSION }}"        
-# # install java in VM
-#       - name: Set up JDK ${{ env.JAVA_VERSION }}
-#         uses: actions/setup-java@v2
-#         with:
-#           java-version: '${{ env.JAVA_VERSION }}'                                                                            
-#           distribution: 'adopt'
-#  # Deciding image tag name based on input received
-#       - name: Deciding Image tag 
-#         shell: "bash"
-#         run: |-
-#           if [[ ${{ github.event_name }} == push && ${{ github.ref_type }} == branch && ${{ github.ref_name }} == master ]]; then echo "IMAGE_TAG=${{needs.Automatic-tag.outputs.output1}}" >> $GITHUB_ENV; fi
-# #verify the valid commit message received or not for tagging
-#       - name: verify the valid commit message received or not for tagging 
-#         run: |
-#           if [[ ${{ env.IMAGE_TAG }} == v*.*.* ]] || [[ ${{ env.IMAGE_TAG }} == V*.*.* ]]; then exit 0; else exit 1; fi          
-
-#  # Storing the image tag name to TAG_NAME variable by remvoing v from tag
-
-#       - name: Storing image tag name into GitHub variables
-#         run: |
-#           echo "TAG_NAME=$(echo "${{ env.IMAGE_TAG }}" | cut -d'v' -f2 | cut -d'V' -f2)" >> $GITHUB_ENV
-        
-#       - name: Display the image tag
-#         run: echo "${{ env.TAG_NAME }}"
-# #update the version in pom.xml & push to master        
-#       - name: update the version in pom.xml & push to master
-#         run: |
-#           git config --global user.email "githubactions@homedepot.com"
-#           git config --global user.name "githubaction"
-#           mvn versions:set -DnewVersion=${{ env.TAG_NAME }} -DprocessAllModules -DgenerateBackupPoms=false
-#           git add .
-#           git commit -m "version in pom.xml file upadted to ${{ env.TAG_NAME }} "
-#           git push https://${{ github.token }}@github.com/${{ github.repository }}.git        
-# # Build with Maven 
-#       - name: Build with Maven
-#         run: mvn $MAVEN_GOAL             
-# #Authentication to GCR      
-#       - uses: google-github-actions/setup-gcloud@master
-#         with:
-#           service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-#           project_id: ${{ env.PROJECT_ID }}
-#           export_default_credentials: true         
-# # change path & build docker image          
-#       - name: build docker image
-#         run: |
-#           docker build -t $HOSTNAME/$PROJECT_ID/$IMAGE_NAME:$TAG_NAME .        
-# #configure docker use Google cloud while pushing image
-#       - name: Configure Docker Client
-#         run: |-
-#           gcloud auth configure-docker --quiet
-#           gcloud auth configure-docker $env.PROJECT_ID --quiet         
-# # show all docker images in vm         
-#       - name: docker image
-#         run: docker images        
-# # push  docker image       
-#       - name: Docker Image to Container Registry (GCR)
-#         run: docker push $HOSTNAME/$PROJECT_ID/$IMAGE_NAME:${{ env.TAG_NAME }}
-# # send message to slack channel about job status
-#       - name: Post to a Slack channel
-#         if: always()
-#         run: |
-#           curl -X POST -H 'Content-type: application/json' --data '{"text":"${{ github.workflow }} ||| in ${{ github.event.repository.name }} repository  ||| in ${{ github.ref_name }} ${{ github.ref_type }} ||| is a ${{ job.status }} ||| click below url to see logs ||| ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ secrets.SLACK_WEBHOOK }}
+      - name: Display GitHub_Env values
+        run: |
+          echo "The hostname is ${{ env.HOSTNAME }}"
+          echo "The Project id is ${{ env.PROJECT_ID }}" 
+          echo "The maven goal is ${{ env.MAVEN_GOAL }}"    
+          echo "job status will be sent to ${{ env.SLACK_CHANNEL }} slack channel"
+          echo "The image name is ${{ env.IMAGE_NAME }}" 
+          echo "The java version is  ${{ env.JAVA_VERSION }}"        
+# install java in VM
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: '${{ env.JAVA_VERSION }}'                                                                            
+          distribution: 'adopt'  
+# Build with Maven 
+      - name: Build with Maven
+        run: |
+          git pull --all
+          git checkout master
+          mvn $MAVEN_GOAL             
+# change path & build docker image          
+      - name: build docker image
+        run: |
+          git pull --all
+          git checkout master
+          docker build -t $HOSTNAME/$PROJECT_ID/$IMAGE_NAME:$TAG_NAME .            
+#Authentication to GCR      
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+          project_id: ${{ env.PROJECT_ID }}
+          export_default_credentials: true              
+#configure docker use Google cloud while pushing image
+      - name: Configure Docker Client
+        run: |-
+          gcloud auth configure-docker --quiet
+          gcloud auth configure-docker $env.PROJECT_ID --quiet         
+# show all docker images in vm         
+      - name: docker image
+        run: docker images        
+# push  docker image       
+      - name: Docker Image to Container Registry (GCR)
+        run: docker push $HOSTNAME/$PROJECT_ID/$IMAGE_NAME:${{ env.TAG_NAME }}
+# send message to slack channel about job status
+      - name: Post to a Slack channel
+        if: always()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${{ github.workflow }} ||| in ${{ github.event.repository.name }} repository  ||| in ${{ github.ref_name }} ${{ github.ref_type }} ||| is a ${{ job.status }} ||| click below url to see logs ||| ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ secrets.SLACK_WEBHOOK }}
         

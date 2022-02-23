@@ -71,7 +71,9 @@ jobs:
           token: ${{ secrets.REPO_ACCOUNT_KEY }}
 
       - name: Display the feature branch name going to merge to master
-        run: echo "${{ github.ref_name }}"
+        run: |
+          echo "${{ github.ref_name }}"
+          echo "${{needs.Finalizing-next-tag-version.outputs.output1}}"
 
       - name: merge-feature-to-master 
         run: |

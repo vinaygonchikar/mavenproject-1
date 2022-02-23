@@ -21,18 +21,35 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 #store the latest tag      
-      - name: Store the latest tag
+      - name: fetch the tags
         run: |
           git fetch --all --tags
           git tag
 
-      - name: Store the latest tag
+      - name: Store the last tag
         run: |         
-          echo "LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV          
+          echo "LATEST_TAG=$(git tag | grep "v*.*.*" | tail -1)" >> $GITHUB_ENV          
 
-      - name: Store the latest tag
+      - name: Dispay the last tag
         run: |         
           echo "${{ env.LATEST_TAG }}"
+
+      - name: store version
+        run: |         
+          echo "${{ env.LATEST_TAG }}" 
+          echo "MAJOR_NO=$(echo v1.2.3 | cut -d'v' -f1 | cut -d'.' -f2)" >> $GITHUB_ENV
+          echo "MINOR_NO=$(echo v1.2.3 | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
+          echo "PATCH_NO=$(echo v1.2.3 | cut -d'v' -f3 | cut -d'.' -f2)" >> $GITHUB_ENV   
+
+       - name: DISPLAY
+        run: |         
+          echo "${{ env.MAJOR_NO }}" 
+          echo "${{ env.MINOR_NO }}" 
+          echo "${{ env.PATCH_NO }}"    
+
+
+
+
   # echo "LATEST_TAG=$(echo git describe --tags --abbrev=0 | cut -d'v' -f2 | cut -d'V' -f2)" >> $GITHUB_ENV
 
       # - name: Deciding branch name

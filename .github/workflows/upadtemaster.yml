@@ -26,10 +26,12 @@ jobs:
 
       - name: update & push to master
         run: |
+          git config --global user.email "vinaygonchikar@gmail.com"
+          git config --global user.name "vinaygonchikar" 
           mvn versions:set -DnewVersion=bbbbbbbbbbbb -DprocessAllModules -DgenerateBackupPoms=false          
           git add .
           git commit -m "change pom.xml version to latest tag before merging"     
-          git push https://${{ github.token }}@github.com/${{ github.repository }}.git   
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git   
 
 
 # && github.event_name == 'push'      

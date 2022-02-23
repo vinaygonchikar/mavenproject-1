@@ -24,6 +24,7 @@ jobs:
       - name: Store the latest tag
         run: |
           git pull --all
+          git describe --tags --abbrev=0
 
       - name: Store the latest tag
         run: |         

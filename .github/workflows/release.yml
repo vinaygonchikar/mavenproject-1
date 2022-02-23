@@ -85,8 +85,8 @@ jobs:
           git clone ${{ github.server_url }}/${{ github.repository }}
           cd ./${{ env.PATHOFFOLDER }}
           pwd
-          git config --global user.email "githubactions@homedepot.com"
-          git config --global user.name "githubaction"
+          git config --global user.email "vinaygonchikar@gmail.com"
+          git config --global user.name "vinaygonchikar"
           git pull --all
           git checkout master
           git merge origin/${{ github.ref_name }} 

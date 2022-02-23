@@ -5,9 +5,7 @@ on:
       branchname:
         description: 'your branch name will be feature-(below entered text) & version in pom.xml will be feature-(below entered text)-snapshot '     
         required: true
-        default: 'warning'
-
- 
+        default: 'warning' 
 jobs:
   mergetomaster:
     runs-on: ubuntu-latest

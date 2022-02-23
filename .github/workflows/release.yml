@@ -86,7 +86,7 @@ jobs:
           cd ..
           pwd
           git clone ${{ github.server_url }}/${{ github.repository }}
-          cd ./
+          cd ./${{ env.PATHOFFOLDER }}
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
           git clone 

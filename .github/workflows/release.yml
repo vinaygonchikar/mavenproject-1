@@ -82,7 +82,6 @@ jobs:
           git config --global user.name "githubaction"
           git pull --all
           git checkout origin/master
-          git pull origin master --allow-unrelated-histories
           git merge ${{ github.ref_name }}
           mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
           git add .

@@ -1,12 +1,12 @@
-name: Prod-CI
-on: 
-  push:
-    branches: 
-      - 'master'
-    paths-ignore:
-     - '.github/**'
-     - '.gitignore'
-     - '**.md'
+name: prod-ci
+on:
+  workflow_dispatch:
+    inputs:
+      branchname:
+        description: 'ypush to master'     
+        required: true
+        default: 'warning'
+
 jobs:
   upadte-pom.xml-in-master:
     if: |

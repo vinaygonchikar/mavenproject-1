@@ -81,20 +81,12 @@ jobs:
 
       - name: merge-feature-to-master 
         run: |
-          ls -la
-          pwd
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          pwd
           git clone ${{ github.server_url }}/${{ github.repository }}
           cd ./${{ env.PATHOFFOLDER }}
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
-          git clone 
           git pull --all
-          git checkout origin/master
+          git checkout master
           git merge ${{ github.ref_name }}
           mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
           git add .

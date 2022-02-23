@@ -94,9 +94,7 @@ jobs:
           git add .
           git commit -m "change pom.xml version to latest tag before merging"
           git push https://${{ github.token }}@github.com/${{ github.repository }}.git
-          ls -la
-          rm -f ${{ env.PATHOFFOLDER }}
-          ls -la
+
 
 
 

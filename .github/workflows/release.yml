@@ -2,15 +2,15 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      Bumpnumber:
+      Bumpversion:
         description: 'in above drop slect featue branch & below select semantic version bump'
         required: true
         default: 'warning' 
         type: choice
         options:
-        - major
-        - minor
-        - patch
+        - Major
+        - Minor
+        - Patch
 
 
 jobs:
@@ -27,25 +27,31 @@ jobs:
 
       - name: Store the last tag
         run: |         
-          echo "LATEST_TAG=$(git tag | grep "v*.*.*" | tail -1)" >> $GITHUB_ENV          
+          echo "LAST_TAG=$(git tag | grep "v*.*.*" | tail -1)" >> $GITHUB_ENV          
 
       - name: Dispay the last tag
         run: |         
-          echo "${{ env.LATEST_TAG }}"
+          echo "${{ env.LAST_TAG }}"
 
       - name: store version
         run: |         
           echo "${{ env.LATEST_TAG }}" 
-          echo "MAJOR_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f1 | cut -d'.' -f1)" >> $GITHUB_ENV
-          echo "MINOR_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
-          echo "PATCH_NO=$(echo "${{ env.LATEST_TAG }}" | cut -d'v' -f3 | cut -d'.' -f2)" >> $GITHUB_ENV   
+          echo "MAJOR_NO=$(echo ${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f1)" >> $GITHUB_ENV
+          echo "MINOR_NO=$(echo ${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
+          echo "PATCH_NO=$(echo ${{ env.LAST_TAG }}" | cut -d'v' -f2 | cut -d'.' -f3)" >> $GITHUB_ENV   
 
       - name: DISPLAY
         run: |         
           echo "${{ env.MAJOR_NO }}" 
           echo "${{ env.MINOR_NO }}" 
-          echo "${{ env.PATCH_NO }}"    
+          echo "${{ env.PATCH_NO }}"  
+          if [[ ${{ github.event.inputs.Bumpversion }} == Major ]]; then echo "LATEST_TAG=$((${{ env.MAJOR_NO }}+1)).0.0" >> $GITHUB_ENV; fi  
+          if [[ ${{ github.event.inputs.Bumpversion }} == Minor ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.$((${{ env.MAJOR_NO }}+1)).0" >> $GITHUB_ENV; fi  
+          if [[ ${{ github.event.inputs.Bumpversion }} == Patch ]]; then echo "LATEST_TAG=v${{ env.MAJOR_NO }}.${{ env.MINOR_NO }}.$((${{ env.PATCH_NO }}+1)).0" >> $GITHUB_ENV; fi
 
+       - name: DISPLAY
+        run: | 
+          echo "${{ env.LATEST_TAG }}"                  
 
 
 

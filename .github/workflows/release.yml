@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: gh pr create --title "Adding readme" --body "Testing pr from cli" --base master -f
+      - run: gh pr create --title "Adding readme" --body "Testing pr from cli" --base master 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

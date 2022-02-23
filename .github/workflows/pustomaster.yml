@@ -1,0 +1,30 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      Bumpversion:
+        description: 'in above drop slect featue branch & below select semantic version bump'
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - Major
+        - Minor
+        - Patch
+        
+  merge-feature-to-master-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2       
+
+      - name: merge-feature-to-master 
+        run: |
+          git pull --all
+          git merge feature-3000
+          mvn versions:set -DnewVersion=100.100.100 -DprocessAllModules -DgenerateBackupPoms=false          
+          git add .
+          git commit -m "change pom.xml version to latest tag before merging"
+          git push
+        
+        
+        

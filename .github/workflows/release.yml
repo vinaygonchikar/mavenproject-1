@@ -86,7 +86,7 @@ jobs:
         run: echo "${{ env.PULLREQUEST_NO }}" 
 
       - name: Approve pull request 
-      - run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
+        run: gh pr merge ${{ env.PULLREQUEST_NO }} --auto -m
 
 
       # - name: Display the feature branch name going to merge to master hello

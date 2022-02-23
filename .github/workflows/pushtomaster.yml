@@ -31,7 +31,7 @@ jobs:
           git config --global user.name "vinaygonchikar"
           git pull --all
           git checkout master
-          git merge origin/feature-3000         
+          git merge feature-3000         
           mvn versions:set -DnewVersion=3000.3000.3000 -DprocessAllModules -DgenerateBackupPoms=false
           git add .
           git commit -m "pom.xml file upadted while creating the branch"

@@ -24,7 +24,7 @@ jobs:
           java-version: '${{ env.JAVA_VERSION }}'                                                                            
           distribution: 'adopt'
 
-    - name: update & push to master
+      - name: update & push to master
         run: |
           mvn versions:set -DnewVersion=bbbbbbbbbbbb -DprocessAllModules -DgenerateBackupPoms=false          
           git add .

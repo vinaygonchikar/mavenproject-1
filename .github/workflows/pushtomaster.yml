@@ -1,30 +1,28 @@
-name: pushtomaster
+name: create-Branch-from-master
 on:
   workflow_dispatch:
     inputs:
-      Bumpversion:
-        description: 'in above drop slect featue branch & below select semantic version bump'
+      branchname:
+        description: 'your branch name will be feature-(below entered text) & version in pom.xml will be feature-(below entered text)-snapshot '     
         required: true
-        default: 'warning' 
-        type: choice
-        options:
-        - Major
-        - Minor
-        - Patch
-        
-  merge-feature-to-master-branch:
+        default: 'warning'
+
+ 
+jobs:
+  mergetomaster:
+    if: |
+      github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch'  
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2       
-
-      - name: merge-feature-to-master 
+      - uses: actions/checkout@v2
+      - name: Branch create
         run: |
-          git pull --all
-          git merge feature-3000
-          mvn versions:set -DnewVersion=100.100.100 -DprocessAllModules -DgenerateBackupPoms=false          
+          git config --global user.email "githubactions@gmal.com"
+          git config --global user.name "githubaction"
+          echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
+          git branch feature-${{ github.event.inputs.branchname }}
+          git checkout feature-${{ github.event.inputs.branchname }}   
+          mvn versions:set -DnewVersion=feature-${{ github.event.inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
           git add .
-          git commit -m "change pom.xml version to latest tag before merging"
-          git push
-        
-        
-        
+          git commit -m "pom.xml file upadted while creating the branch"
+          git push https://${{ github.token }}@github.com/${{ github.repository }}.git

@@ -40,7 +40,7 @@ jobs:
           echo "MINOR_NO=$(echo v1.2.3 | cut -d'v' -f2 | cut -d'.' -f2)" >> $GITHUB_ENV
           echo "PATCH_NO=$(echo v1.2.3 | cut -d'v' -f3 | cut -d'.' -f2)" >> $GITHUB_ENV   
 
-       - name: DISPLAY
+      - name: DISPLAY
         run: |         
           echo "${{ env.MAJOR_NO }}" 
           echo "${{ env.MINOR_NO }}" 

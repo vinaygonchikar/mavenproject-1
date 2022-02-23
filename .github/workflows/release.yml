@@ -67,7 +67,9 @@ jobs:
     needs: Finalizing-next-tag-version    
     steps:
       - uses: actions/checkout@v2
-
+        with:
+          token: ${{ secrets.REPO_ACCOUNT_KEY }}
+          
       - name: Display the feature branch name going to merge to master
         run: echo "${{ github.ref_name }}"
 
@@ -75,8 +77,6 @@ jobs:
         run: |
           git config --global user.email "githubactions@homedepot.com"
           git config --global user.name "githubaction"
-          git pull --all
-          git checkout ${{ github.ref_name }}   
           mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false
           git add .
           git commit -m "change pom.xml version to latest tag before merging"

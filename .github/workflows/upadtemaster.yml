@@ -30,8 +30,7 @@ jobs:
           git add .
           git commit -m "change pom.xml version to latest tag before merging"     
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
+          git push https://${{ github.token }}@github.com/${{ github.repository }}.git   
 
 
 # && github.event_name == 'push'      

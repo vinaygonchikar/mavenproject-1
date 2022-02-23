@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.piomin</groupId>
     <artifactId>sample-spring-microservices</artifactId>
-    <version>feature-login-page-SNAPSHOT</version>
+    <version>feature-amma-babbo-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>

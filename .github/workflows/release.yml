@@ -15,33 +15,41 @@ on:
 
 jobs:
   Finalizing-next-release-version:
-    if: |
-      github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
+    # if: |
+    #   github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+#store the latest tag      
+      - name: Store the latest tag
+        run: |
+          git pull --all
+          echo "LATEST_TAG=$(echo git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          echo "${{ env.LATEST_TAG }}"
 
-      - name: Deciding branch name
-        shell: "bash"
-        run: |-
-          if [[ ${{ github.event.inputs.inputpassed }} == feature ]]; then echo "FINAL_BRANCH_NAME=feature-${{ github.event.inputs.branchname }}" >> $GITHUB_ENV; fi  
+  # echo "LATEST_TAG=$(echo git describe --tags --abbrev=0 | cut -d'v' -f2 | cut -d'V' -f2)" >> $GITHUB_ENV
+
+      # - name: Deciding branch name
+      #   shell: "bash"
+      #   run: |-
+      #     if [[ ${{ github.event.inputs.inputpassed }} == feature ]]; then echo "FINAL_BRANCH_NAME=feature-${{ github.event.inputs.branchname }}" >> $GITHUB_ENV; fi  
 
 #if [[ ${{ github.event.inputs.inputpassed }} == local ]]; then echo "FINAL_BRANCH_NAME=local-${{ github.event.inputs.branchname }}" >> $GITHUB_ENV; fi
 
-      - name: Display the branch name
-        run: echo "${{ env.FINAL_BRANCH_NAME }}"
+      # - name: Display the branch name
+      #   run: echo "${{ env.FINAL_BRANCH_NAME }}"
 
-      - name: create Branch 
-        run: |
-          git config --global user.email "githubactions@homedepot.com"
-          git config --global user.name "githubaction"
-          echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
-          git branch ${{ env.FINAL_BRANCH_NAME }}
-          git checkout ${{ env.FINAL_BRANCH_NAME }}   
-          mvn versions:set -DnewVersion=${{ env.FINAL_BRANCH_NAME }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
-          git add .
-          git commit -m "pom.xml file upadted while creating the branch"
-          git push https://${{ github.token }}@github.com/${{ github.repository }}.git
+      # - name: create Branch 
+      #   run: |
+      #     git config --global user.email "githubactions@homedepot.com"
+      #     git config --global user.name "githubaction"
+      #     echo "your new branch name is feature-${{ github.event.inputs.branchname }}"
+      #     git branch ${{ env.FINAL_BRANCH_NAME }}
+      #     git checkout ${{ env.FINAL_BRANCH_NAME }}   
+      #     mvn versions:set -DnewVersion=${{ env.FINAL_BRANCH_NAME }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
+      #     git add .
+      #     git commit -m "pom.xml file upadted while creating the branch"
+      #     git push https://${{ github.token }}@github.com/${{ github.repository }}.git
 
   # merge-feature-to-master:
   #   if: |

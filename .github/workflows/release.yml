@@ -19,7 +19,7 @@ jobs:
       github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.step1.outputs.FINAL_TAG }}           
+      output1: ${{ steps.step1.outputs.LAST_VERSION }}           
     steps:
       - uses: actions/checkout@v2
       - name: Fetch all tags
@@ -54,10 +54,11 @@ jobs:
 
       - name: Display the next tag version
         run: | 
-          echo "${{ env.LATEST_TAG }}"      
+          echo "${{ env.LATEST_TAG }}"
+          echo "LAST_VERSION=$(echo "${{ env.LAST_TAG }}" | cut -d'v' -f2)" >> $GITHUB_ENV    
 
       - id: step1
-        run: echo "::set-output name=FINAL_TAG::${{ env.LATEST_TAG }}"                       
+        run: echo "::set-output name=LAST_VERSION::${{ env.LAST_VERSION }}"                       
 
   merge-feature-to-master-branch:
     if: |
@@ -76,7 +77,7 @@ jobs:
           git config --global user.name "githubaction"
           git pull --all
           git checkout ${{ github.ref_name }}   
-          mvn versions:set -DnewVersion=${{ env.FINAL_BRANCH_NAME }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
+          mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false
           git add .
           git commit -m "change pom.xml version to latest tag before merging"
           git checkout master

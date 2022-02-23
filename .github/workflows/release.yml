@@ -109,7 +109,7 @@ jobs:
       #     git pull --all
       #     git checkout master
       #     git merge origin/${{ github.ref_name }} 
-      #     mvn versions:set -DnewVersion=${{needs.Finalizing-next-tag-version.outputs.output1}} -DprocessAllModules -DgenerateBackupPoms=false          
+      #     mvn versions:set -DnewVersion=bbbbbbbbbbbb -DprocessAllModules -DgenerateBackupPoms=false          
       #     git add .
       #     git commit -m "change pom.xml version to latest tag before merging"
       #     git push https://${{ github.token }}@github.com/${{ github.repository }}.git

@@ -135,6 +135,7 @@ jobs:
       - name: tag the master branch
         run: | 
           echo "v${{needs.Finalizing-next-tag-version.outputs.output1}}"
+          git pull --all
           git checkout master          
           git tag v${{needs.Finalizing-next-tag-version.outputs.output1}}   
           git push origin v${{needs.Finalizing-next-tag-version.outputs.output1}}  

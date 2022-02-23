@@ -1,4 +1,4 @@
-name: create-Branch-from-master
+name: mergetomaster
 on:
   workflow_dispatch:
     inputs:

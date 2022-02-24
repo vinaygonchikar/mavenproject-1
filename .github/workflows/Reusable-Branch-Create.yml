@@ -1,0 +1,34 @@
+name: Reusable Branch Create
+#below are input required when using this action
+on:
+  workflow_call:
+    inputs:
+      branchname:
+        required: true
+        type: string
+    secrets:
+      PASS_TOKEN:
+        required: true
+#action has below steps        
+jobs:
+  Feature-Branch-From-Master:
+    if: |
+      github.ref_name == 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Display the branch name
+        run: echo "feature-${{ inputs.branchname }}"
+
+      - name: create Branch 
+        run: |
+          git config --global user.email "githubactions@homedepot.com"
+          git config --global user.name "githubaction"
+          echo "your new branch name is feature-${{ inputs.branchname }}"
+          git branch feature-${{ inputs.branchname }}
+          git checkout feature-${{ inputs.branchname }}   
+          mvn versions:set -DnewVersion=feature-${{ inputs.branchname }}-SNAPSHOT -DprocessAllModules -DgenerateBackupPoms=false
+          git add .
+          git commit -m "pom.xml file upadted while creating the branch"
+          git push https://${{ secrets.PASS_TOKEN }}@github.com/${{ github.repository }}.git

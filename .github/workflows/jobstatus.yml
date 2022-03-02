@@ -21,14 +21,12 @@ jobs:
 
       - name: create a pull request
         continue-on-error: true
-        run: |-  
+        run: |
           gh pr create --title "Adding readme" --body "Testing pr from cli" --base master
+          echo "pullrequesttatus=$(echo $?)" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: store pull request status
-        run: |         
-          echo "pullrequesttatus=$(echo $?)" >> $GITHUB_ENV
       - name: Dispay pull request status code
         run: |         
           echo "${{ env.pullrequesttatus }}" 

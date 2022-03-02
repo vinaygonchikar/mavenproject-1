@@ -28,6 +28,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Dispay pull request status code
-        if: $pullrequeststatus == 0
+        if: ${{ env.pullrequeststatus }} == '0'
         run: |         
           echo "${{ env.pullrequeststatus }}" 

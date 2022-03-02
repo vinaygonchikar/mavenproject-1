@@ -2,3 +2,4 @@ llo
  feature-3000
 he
 llo
+every step must define a `uses` or `run` key

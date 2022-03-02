@@ -5,8 +5,6 @@ on:
 
 jobs:
   actor:
-    if: |
-      github.ref_name != 'master' && github.ref_type == 'branch' && github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

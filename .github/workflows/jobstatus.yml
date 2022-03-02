@@ -20,15 +20,19 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: create a pull request
-        id: pullrequest_status
         continue-on-error: true
         run: |
           gh pr create --title "Adding readme" --body "Testing pr from cli" --base master
           echo "pullrequeststatus=$(echo $?)" >> $GITHUB_ENV
-          echo "::set-output name=result::${{ env.pullrequeststatus }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
+          
+      - name: Check pull request status 
+        id: pullrequest_status          
+        run: |
+          echo "::set-output name=result::${{ env.pullrequeststatus }}"          
+                
       - name: Dispay pull request status code
         if: steps.pullrequest_status.outputs.result == '0'
         run: |         
